@@ -1,0 +1,15 @@
+:root {
+  --main-bg-color: #888888;
+  --main-accent-color: #ff88bb;
+}
+
+body {
+  margin: 0;
+  background-color: var(--main-bg-color);
+}
+
+#main-container {
+  padding: 10px;
+  margin: 10px;
+  background-color: var(--main-accent-color);
+}
