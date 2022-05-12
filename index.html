@@ -15,31 +15,14 @@
           </div>-->
 
           <div id="create-btn-div">
-            <button id="data-btn" class="create-btn">New data view</button>
-            <button id="sim-btn" class="create-btn">New trading sim view</button>
-            <button id="predictor-btn" class="create-btn">New predictor view</button>
+            <button id="data-btn" class="create-btn" onclick="createView(views.DATA);">New data view</button>
+            <button id="sim-btn" class="create-btn" onclick="createView(views.SIMULATION);">New trading sim view</button>
+            <button id="predictor-btn" class="create-btn" onclick="createView(views.PREDICTOR);">New predictor view</button>
           </div>
         </div>
       </div>
 
-      <div id="view-container">
-        <div class="view-subcontainer" id="view-sub-idnum">
-          <div class="view-header"><h4>View Header</h4></div>
-          <div class="view-content">
-            <div class="view-controls">controls
-            </div>
-            <div class="view">view content</div>
-          </div>
-        </div>
-
-        <div class="view-subcontainer" id="view-sub-idnum">
-          <div class="view-header"><h4>View Header</h4></div>
-          <div class="view-content">
-            <div class="view-controls">controls</div>
-            <div class="view">other content</div>
-          </div>
-        </div>
-      </div>
+      <div id="view-container"></div>
 
     </div>
     <script src="script_1.js"></script>

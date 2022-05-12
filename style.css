@@ -8,11 +8,12 @@
   --main-text-col: #000000;
 }
 
-body {
+html, body {
   margin: 0;
   background-color: var(--main-bg-col);
   font-family: arial;
   font-weight: lighter;
+  height: 100%;
 }
 
 #page-content {
@@ -54,10 +55,19 @@ body {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+#main-container {
+  height: 100%;
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: column;
+}
+
 #view-container {
   margin: 10px;
   background-color: var(--main-accent-col);
   padding: 10px;
+  min-height: 100%;
+  flex-grow: 1;
 }
 
 .view-subcontainer {
@@ -70,6 +80,19 @@ body {
 
 .view-header {
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-header-title {
+  flex: 2;
+  border-radius: 15px;
+}
+
+.view-header-content {
+  flex: 1;
 }
 
 .view-content {
