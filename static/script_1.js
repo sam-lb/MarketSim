@@ -1,18 +1,18 @@
-var trace2 = {
+const trace2 = {
   x: [2, 3, 4, 5],
   y: [16, 5, 11, 9],
   mode: 'lines+markers'
 };
 
-var trace3 = {
+const trace3 = {
   x: [1, 2, 3, 4],
   y: [12, 9, 15, 12],
   mode: 'lines+markers'
 };
 
-var data = [ trace2, trace3 ];
+const data = [ trace2, trace3 ];
 
-var layout = {
+const layout = {
   title:'graph of data will go here'
 };
 
@@ -56,6 +56,11 @@ function deleteView(viewID) {
   target.parentNode.removeChild(target);
 }
 
+function test(viewID) {
+  const chartDiv =  document.getElementById("chart-div-"+viewID);
+  chartDiv.style.display = (chartDiv.style.display === "block") ? "none" : "block";
+}
+
 function createView(view) {
   /*
   create a new view of type viewType
@@ -77,8 +82,12 @@ function createView(view) {
       </div>
       <div class="view-content">
         <div class="view-controls" id="view-controls-${viewIDCounter}">controls
+          <br/>
+          <button class="create-btn" onclick="test(${viewIDCounter});">hide/show</button>
         </div>
-        <div class="view" id="view-content-${viewIDCounter}">view content</div>
+        <div class="view" id="view-content-${viewIDCounter}">
+          <div id="chart-div-${viewIDCounter}"></div>
+        </div>
       </div>`;
     div.innerHTML = newContent;
 
@@ -90,7 +99,6 @@ function createView(view) {
       block: "center",
     });
 
+    Plotly.newPlot('chart-div-'+viewIDCounter, data, layout);
     viewIDCounter++;
 }
-
-// Plotly.newPlot('chart-div-1', data, layout);
