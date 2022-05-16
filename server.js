@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require("fs");
 const url = require("url");
+const yf = require("yahoo-finance");
 
 const ind = require("./static/indicators.js");
 
@@ -10,18 +11,25 @@ app.use(express.static("./static"));
 
 
 const apiRequestListener = (req, res) => {
-  console.log("REQUEST RECEIVED : " + req.url);
-  const responseData = {
-    "sample 1": 12,
-    "sample 2": "chicken",
-    "sample 3": [1, 2, 3],
-    "sample 4": {
-      "subsample 1": 5,
-      "subsample 2": "subchicken",
-    },
-  };
-  const jsonData = JSON.stringify(responseData);
-  res.end(jsonData);
+  console.log("API REQUEST RECEIVED : " + req.url);
+
+  const params = url.parse(req.url, true).query;
+  const start = `${params.Y}-${params.M}-${params.D}`;
+  const end = `${params.endY}-${params.endM}-${params.D}`; // TODO fix this to use Date
+
+  yf.historical({
+    symbol: params.sym,
+    from: start,
+    to: end,
+    period: params.per,
+  }, (err,quotes)=>{
+    /* TODO
+    if (params.ind) {
+      compute indicators
+    }
+    */
+    res.end(JSON.stringify({response: quotes}));
+  });
 }
 
 app.get('/', (req, res) => {

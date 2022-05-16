@@ -121,11 +121,19 @@ function createControls(view) {
   }
 }
 
-function getData(start, end, interval) {
-  // TODO
+function getData(start, end, ticker, period, indicators) {
   // pull data from ./api (yahoo-finance historical data and computed indicators)
-  const queryParams = "";
-  fetch(apiAddress + queryParams)
+  start = start.split("-");
+  end = end.split("-"); // TODO fix this to use Date
+  const Y = start[0], M = start[1], D = start[2];
+  const endY = end[0], endM = end[1], endD = end[2];
+  indicators = indicators ? 1 : 0;
+
+  // TODO add validity checks for parameters
+
+  const queryString = `?Y=${Y}&M=${M}&D=${D}&endY=${endY}&endM=${endM}&endD=${endD}&sym=${ticker}&per=${period}&ind=${indicators}`;
+  // const queryString = "?Y=2012&M=01&D=01&endY=2012&endM=02&endD=01&sym=AAPL&per=w&ind=0";
+  fetch(apiAddress + queryString)
     .then(response => response.json())
     .then(data => {
       console.log(data);
