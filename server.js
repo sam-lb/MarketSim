@@ -28,7 +28,7 @@ const apiRequestListener = (req, res) => {
       compute indicators
     }
     */
-    res.end(JSON.stringify({response: quotes}));
+    res.end(JSON.stringify({content: quotes}));
   });
 }
 

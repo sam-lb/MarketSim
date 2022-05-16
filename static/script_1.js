@@ -103,7 +103,7 @@ function createView(view) {
       block: "center",
     });
 
-    Plotly.newPlot('chart-div-'+viewIDCounter, data, layout);
+    createGraph(viewIDCounter);
     viewIDCounter++;
 }
 
@@ -112,6 +112,7 @@ function createControls(view) {
   // generate html for the controls of a view
   switch(view) {
     case views.DATA:
+      return createDataControls();
       break;
     case views.SIMULATION:
       break;
@@ -119,6 +120,12 @@ function createControls(view) {
       break;
     default:
   }
+}
+
+function createDataControls(view) {
+  // TODO
+  // generate html for the controls of a data view
+  
 }
 
 function getData(start, end, ticker, period, indicators) {
@@ -132,17 +139,60 @@ function getData(start, end, ticker, period, indicators) {
   // TODO add validity checks for parameters
 
   const queryString = `?Y=${Y}&M=${M}&D=${D}&endY=${endY}&endM=${endM}&endD=${endD}&sym=${ticker}&per=${period}&ind=${indicators}`;
-  // const queryString = "?Y=2012&M=01&D=01&endY=2012&endM=02&endD=01&sym=AAPL&per=w&ind=0";
-  fetch(apiAddress + queryString)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-    });
+  return fetch(apiAddress + queryString).then(response => response.json());
 }
 
 function createGraph(viewID) {
-  // TODO
   // build a graph for a view
+
+  // these will be parameters in the future (from the interface) ------|
+  const start = "2012-01-01";
+  const end = "2012-02-01";
+  const ticker = "AAPL";
+  const period = "d";
+  const indicators = false;
+  // ------------------------------------------------------------------|
+
+  getData(start, end, ticker, period, indicators)
+    .then(data => {
+      let closePrice = [], openPrice = [], xAxis = [];
+      for (let i=0; i<data.content.length; i++) {
+        xAxis.push(i);
+        openPrice.push(data.content[i].close);
+        closePrice.push(data.content[i].open);
+      }
+
+      const traces = [
+        {
+          x: xAxis,
+          y: openPrice,
+          mode: "lines+markers",
+          name: "Open",
+        },
+        {
+          x: xAxis,
+          y: closePrice,
+          mode: "lines+markers",
+          name: "Close",
+        },
+      ];
+
+      const graphLayout = {
+        title: `${ticker} from ${start} to ${end}`,
+        xaxis: {
+          title: {
+            text: "Time",
+          },
+        },
+        yaxis: {
+          title: {
+            text: "Fat Stacks"
+          },
+        },
+      };
+
+      Plotly.newPlot("chart-div-" + viewID, traces, graphLayout);
+    });
 }
 
 function createTable(viewID) {
