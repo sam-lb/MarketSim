@@ -1,3 +1,5 @@
+
+// to be replaced with data from api calls
 const trace2 = {
   x: [2, 3, 4, 5],
   y: [16, 5, 11, 9],
@@ -20,7 +22,9 @@ const layout = {
 tickers = ["ticker 1", "ticker 2", "ticker 3"];
 index_funds = ["index 1", "index 2", "index 3"];
 
-viewIDCounter = 0;
+let viewIDCounter = 0;
+const PORT = 3000;
+const apiAddress = `http://localhost:${PORT}/api`;
 
 const views = {
   DATA: {id: 0, title: "Untitled Data View"},
@@ -101,4 +105,39 @@ function createView(view) {
 
     Plotly.newPlot('chart-div-'+viewIDCounter, data, layout);
     viewIDCounter++;
+}
+
+function createControls(view) {
+  // TODO
+  // generate html for the controls of a view
+  switch(view) {
+    case views.DATA:
+      break;
+    case views.SIMULATION:
+      break;
+    case views.PREDICTOR:
+      break;
+    default:
+  }
+}
+
+function getData(start, end, interval) {
+  // TODO
+  // pull data from ./api (yahoo-finance historical data and computed indicators)
+  const queryParams = "";
+  fetch(apiAddress + queryParams)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+    });
+}
+
+function createGraph(viewID) {
+  // TODO
+  // build a graph for a view
+}
+
+function createTable(viewID) {
+  // TODO
+  // build a table for a view
 }
