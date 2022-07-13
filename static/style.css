@@ -16,6 +16,10 @@ html, body {
   height: 100%;
 }
 
+select {
+  max-height: 200px;
+}
+
 #page-content {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }

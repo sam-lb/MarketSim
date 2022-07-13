@@ -32,6 +32,14 @@ const views = {
   PREDICTOR: {id: 2, title: "Untitled Predictor View"},
 };
 
+const TOP_TICKERS_HTML = (()=>{
+  let result = "";
+  for (let ticker of TOP_TICKERS) {
+    result += `<option value="${ticker}">${ticker}</option>`;
+  }
+  return result;
+})();
+
 function editTitle(viewID) {
   // toggle the editility of the title of the given view
   const header = document.getElementById(`view-header-title-${viewID}`);
@@ -80,7 +88,7 @@ function createView(view) {
   div.setAttribute("id", "view-sub-"+viewIDCounter);
   div.setAttribute("class", "view-subcontainer");
   const title = view.title + " " + viewIDCounter;
-  const currentDate = todaysDate();
+  const controlsHTML = createControls(view, viewIDCounter);
 
   const newContent = `
       <div class="view-header">
@@ -94,32 +102,13 @@ function createView(view) {
         <div class="view-controls" id="view-controls-${viewIDCounter}">
           <!--<br/>
           <button class="create-btn" onclick="test(${viewIDCounter});">hide/show</button>-->
-          <div class="controls-subcontainer">
-            <fieldset>
-              <legend>Ticker Information</legend>
-              <label for="ticker-select-${viewIDCounter}">Ticker symbol: </label>
-              <select id="ticker-select-${viewIDCounter}">
-                <option value="AAPL">AAPL (Apple Inc)</option>
-              </select><br />
-              <label for="start-date-${viewIDCounter}">Start date: </label>
-              <input type="date" min="2012-01-01" max="${currentDate}" value="2021-01-01" id="start-date-${viewIDCounter}"><br />
-              <label for="end-date-${viewIDCounter}">End date: </label>
-              <input type="date" min="2012-01-01" max="${currentDate}" value="2021-02-01" id="end-date-${viewIDCounter}"><br />
-              <label for="period-select-${viewIDCounter}">Period: </label>
-              <select id="period-select-${viewIDCounter}">
-                <option value="d">Daily</option>
-                <option value="w">Weekly</option>
-                <option value="m">Monthly</option>
-              </select>
-            </fieldset>
-          </div>
+          ${controlsHTML}
           <button class="create-btn" onclick="readDataControls(${viewIDCounter});">Update View</button>
         </div>
         <div class="view" id="view-content-${viewIDCounter}">
           <div id="chart-div-${viewIDCounter}"></div>
         </div>
       </div>`;
-    // TODO move the stuff in <fieldset> tags (and surrounding div) to the createControls function
     div.innerHTML = newContent;
 
     const container = document.getElementById("view-container");
@@ -130,7 +119,6 @@ function createView(view) {
       block: "center",
     });
 
-    createControls(view, viewIDCounter);
     // createGraph(viewIDCounter);
     viewIDCounter++;
 }
@@ -140,7 +128,8 @@ function createControls(view, viewID) {
   // generate html for the controls of a view
   switch(view) {
     case views.DATA:
-      return createDataControls(viewID);
+      const res = createDataControls(viewID);
+      return res;
       break;
     case views.SIMULATION:
       break;
@@ -154,28 +143,28 @@ function createDataControls(viewID) {
   // TODO
   // generate html for the controls of a data view
   //const template = ``
+  const currentDate = todaysDate();
+  const controls = `<div class="controls-subcontainer">
+    <fieldset>
+      <legend>Ticker Information</legend>
+      <label for="ticker-select-${viewID}">Ticker symbol: </label>
+      <select id="ticker-select-${viewID}">
+        ${TOP_TICKERS_HTML}
+      </select><br />
+      <label for="start-date-${viewID}">Start date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-01-01" id="start-date-${viewID}"><br />
+      <label for="end-date-${viewID}">End date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-02-01" id="end-date-${viewID}"><br />
+      <label for="period-select-${viewID}">Period: </label>
+      <select id="period-select-${viewID}">
+        <option value="d">Daily</option>
+        <option value="w">Weekly</option>
+        <option value="m">Monthly</option>
+      </select>
+    </fieldset>
+  </div>`;
+  return controls;
 }
-
-
-// <fieldset>
-//   <legend>Ticker Information</legend>
-//   <label for="ticker-select-${viewIDCounter}">Ticker symbol: </label>
-//   <select id="ticker-select-${viewIDCounter}">
-//     <option value="AAPL">AAPL (Apple Inc)</option>
-//   </select><br />
-//   <label for="start-date-${viewIDCounter}">Start date: </label>
-//   <input type="date" min="2012-01-01" max="${currentDate}" value="2021-01-01" id="start-date-${viewIDCounter}"><br />
-//   <label for="end-date-${viewIDCounter}">End date: </label>
-//   <input type="date" min="2012-01-01" max="${currentDate}" value="2021-02-01" id="end-date-${viewIDCounter}"><br />
-//   <label for="period-select-${viewIDCounter}">Period: </label>
-//   <select id="period-select-${viewIDCounter}">
-//     <option value="d">Daily</option>
-//     <option value="w">Weekly</option>
-//     <option value="m">Monthly</option>
-//   </select><br />
-//   <label for="indicators-${viewIDCounter}">Compute Indicators? </label>
-//   <input type="checkbox" id="indicators-${viewIDCounter}">
-// </fieldset>
 
 function readDataControls(viewID) {
   const ticker = document.getElementById(`ticker-select-${viewID}`).value;

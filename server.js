@@ -2,8 +2,11 @@ const express = require('express');
 const fs = require("fs");
 const url = require("url");
 const yf = require("yahoo-finance");
+const gauss = require("gauss");
 
+global.gauss = gauss;
 const ind = require("./static/indicators.js");
+global.ind = ind;
 
 const app = express();
 const PORT = 3000;
@@ -36,7 +39,7 @@ app.get('/', (req, res) => {
   fs.readFile("./index.html", function(err, data) {
     res.writeHead(200, {"Content-Type": "text/html"});
     res.write(data);
-    return res.end();
+    return res.send();
   });
 });
 
