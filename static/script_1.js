@@ -83,6 +83,8 @@ function createView(view) {
   create a new view of type viewType
   view is a value from the views enum
   */
+  // console.log(movingAverage(0,0));
+  // console.log("gauss: ", global.gauss);
 
   const div = document.createElement("div");
   div.setAttribute("id", "view-sub-"+viewIDCounter);
@@ -171,7 +173,7 @@ function readDataControls(viewID) {
   const start = document.getElementById(`start-date-${viewID}`).value;
   const end = document.getElementById(`end-date-${viewID}`).value;
   const period = document.getElementById(`period-select-${viewID}`).value;
-  createGraph(viewID, start, end, ticker, period, false);
+  createLineGraph(viewID, start, end, ticker, period, false);
 }
 
 function getData(start, end, ticker, period, indicators) {
@@ -188,24 +190,17 @@ function getData(start, end, ticker, period, indicators) {
   return fetch(apiAddress + queryString).then(response => response.json());
 }
 
-function createGraph(viewID, start, end, ticker, period, indicators) {
+function createLineGraph(viewID, start, end, ticker, period, indicators) {
   // build a graph for a view
-
-  // // these will be parameters in the future (from the interface) ------|
-  // const start = "2012-01-01";
-  // const end = "2012-02-01";
-  // const ticker = "AAPL";
-  // const period = "d";
-  // const indicators = false;
-  // // ------------------------------------------------------------------|
 
   getData(start, end, ticker, period, indicators)
     .then(data => {
       let closePrice = [], openPrice = [], xAxis = [];
-      for (let i=0; i<data.content.length; i++) {
-        xAxis.push(i);
-        openPrice.push(data.content[i].close);
-        closePrice.push(data.content[i].open);
+      data = data.content;
+      for (let i=0; i<data.length; i++) {
+        xAxis.push(data[i].date);
+        openPrice.push(data[i].close);
+        closePrice.push(data[i].open);
       }
 
       const traces = [
@@ -239,6 +234,10 @@ function createGraph(viewID, start, end, ticker, period, indicators) {
 
       Plotly.newPlot("chart-div-" + viewID, traces, graphLayout);
     });
+}
+
+function createCandleStick(viewID, start, end, ticker, period, indicators) {
+
 }
 
 function createTable(viewID) {

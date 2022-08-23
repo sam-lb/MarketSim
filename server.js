@@ -2,11 +2,7 @@ const express = require('express');
 const fs = require("fs");
 const url = require("url");
 const yf = require("yahoo-finance");
-const gauss = require("gauss");
-
-global.gauss = gauss;
 const ind = require("./static/indicators.js");
-global.ind = ind;
 
 const app = express();
 const PORT = 3000;
