@@ -59,6 +59,10 @@ select {
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+.submit-btn-cont {
+  margin: 10px 0px 10px 0px;
+}
+
 #main-container {
   min-height: 100%;
   border: 1px solid blue;

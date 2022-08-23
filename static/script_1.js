@@ -105,7 +105,9 @@ function createView(view) {
           <!--<br/>
           <button class="create-btn" onclick="test(${viewIDCounter});">hide/show</button>-->
           ${controlsHTML}
-          <button class="create-btn" onclick="readDataControls(${viewIDCounter});">Update View</button>
+          <div class="submit-btn-cont">
+            <button class="create-btn" onclick="readDataControls(${viewIDCounter});">Update View</button>
+          </div>
         </div>
         <div class="view" id="view-content-${viewIDCounter}">
           <div id="chart-div-${viewIDCounter}"></div>
@@ -163,6 +165,16 @@ function createDataControls(viewID) {
         <option value="w">Weekly</option>
         <option value="m">Monthly</option>
       </select>
+    </fieldset><br />
+    <fieldset>
+      <legend>Plot settings</legend>
+      <label for="plot-type-select-${viewID}">Plot type: </label>
+      <select id="plot-type-select-${viewID}">
+        <option value="line-plot">Line Plot</option>
+        <option value="candlestick-plot">Candlestick Plot</option>
+      </select><br />
+      <label for="show-points-${viewID}">Show points</label>
+      <input type="checkbox" id="show-points-${viewID}" checked>
     </fieldset>
   </div>`;
   return controls;
@@ -173,6 +185,12 @@ function readDataControls(viewID) {
   const start = document.getElementById(`start-date-${viewID}`).value;
   const end = document.getElementById(`end-date-${viewID}`).value;
   const period = document.getElementById(`period-select-${viewID}`).value;
+
+  const plotSettings = {
+    "plot-type": document.getElementById(`plot-type-select-${viewID}`).value,
+    "show-points": document.getElementById(`show-points-${viewID}`).checked,
+  };
+
   createLineGraph(viewID, start, end, ticker, period, false);
 }
 
@@ -195,24 +213,17 @@ function createLineGraph(viewID, start, end, ticker, period, indicators) {
 
   getData(start, end, ticker, period, indicators)
     .then(data => {
-      let closePrice = [], openPrice = [], xAxis = [];
-      data = data.content;
-      for (let i=0; i<data.length; i++) {
-        xAxis.push(data[i].date);
-        openPrice.push(data[i].close);
-        closePrice.push(data[i].open);
-      }
 
       const traces = [
         {
-          x: xAxis,
-          y: openPrice,
+          x: data.datetime,
+          y: data.open,
           mode: "lines+markers",
           name: "Open",
         },
         {
-          x: xAxis,
-          y: closePrice,
+          x: data.datetime,
+          y: data.close,
           mode: "lines+markers",
           name: "Close",
         },

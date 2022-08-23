@@ -9,6 +9,26 @@ const PORT = 3000;
 app.use(express.static("./static"));
 
 
+function formatData(quotes) {
+  const openPrice = [], highPrice = [], lowPrice = [], closePrice = [], dateTime = [];
+  let quote;
+  for (let i=0; i<quotes.length; i++) {
+    quote = quotes[i];
+    openPrice.push(quote.open);
+    highPrice.push(quote.high);
+    lowPrice.push(quote.low);
+    closePrice.push(quote.close);
+    dateTime.push(quote.date);
+  }
+  return {
+    "open": openPrice,
+    "high": highPrice,
+    "low": lowPrice,
+    "close": closePrice,
+    "datetime": dateTime,
+  };
+}
+
 const apiRequestListener = (req, res) => {
   console.log("API REQUEST RECEIVED : " + req.url);
 
@@ -21,13 +41,14 @@ const apiRequestListener = (req, res) => {
     from: start,
     to: end,
     period: params.per,
-  }, (err,quotes)=>{
+  }, (err,quotes) => {
+    const result = formatData(quotes);
     /* TODO
     if (params.ind) {
       compute indicators
     }
     */
-    res.end(JSON.stringify({content: quotes}));
+    res.end(JSON.stringify(result));
   });
 }
 
