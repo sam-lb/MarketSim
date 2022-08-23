@@ -191,7 +191,16 @@ function readDataControls(viewID) {
     "show-points": document.getElementById(`show-points-${viewID}`).checked,
   };
 
-  createLineGraph(viewID, start, end, ticker, period, false);
+  switch (plotSettings["plot-type"]) {
+    case "line-plot":
+      createLineGraph(viewID, start, end, ticker, period, plotSettings);
+      break;
+    case "candlestick-plot":
+      createCandlestick(viewID, start, end, ticker, period, plotSettings);
+      break;
+    default:
+      createLineGraph(viewID, start, end, ticker, period, plotSettings);
+  }
 }
 
 function getData(start, end, ticker, period, indicators) {
@@ -208,23 +217,25 @@ function getData(start, end, ticker, period, indicators) {
   return fetch(apiAddress + queryString).then(response => response.json());
 }
 
-function createLineGraph(viewID, start, end, ticker, period, indicators) {
+function createLineGraph(viewID, start, end, ticker, period, plotSettings) {
   // build a graph for a view
 
-  getData(start, end, ticker, period, indicators)
+  const lineMode = plotSettings["show-points"] ? "lines+markers" : "lines";
+
+  getData(start, end, ticker, period, false)
     .then(data => {
 
       const traces = [
         {
           x: data.datetime,
           y: data.open,
-          mode: "lines+markers",
+          mode: lineMode,
           name: "Open",
         },
         {
           x: data.datetime,
           y: data.close,
-          mode: "lines+markers",
+          mode: lineMode,
           name: "Close",
         },
       ];
@@ -247,8 +258,42 @@ function createLineGraph(viewID, start, end, ticker, period, indicators) {
     });
 }
 
-function createCandleStick(viewID, start, end, ticker, period, indicators) {
+function createCandlestick(viewID, start, end, ticker, period, plotSettings) {
+  getData(start, end, ticker, period, false)
+    .then(data => {
 
+      const traces = [
+        {
+          x: data.datetime,
+          close: data.close,
+          decreasing: {line: {color: "#FFBBBB"}},
+          high: data.high,
+          increasing: {line: {color: "#BBBBFF"}},
+          low: data.low,
+          open: data.open,
+          type: "candlestick",
+        }
+      ];
+
+      const graphLayout = {
+        title: `${ticker} from ${start} to ${end}`,
+        xaxis: {
+          title: {
+            text: "Time",
+          },
+          rangeslider: {
+            visible: false
+          }
+        },
+        yaxis: {
+          title: {
+            text: "Fat Stacks"
+          },
+        },
+      };
+
+      Plotly.newPlot("chart-div-" + viewID, traces, graphLayout);
+    });
 }
 
 function createTable(viewID) {
