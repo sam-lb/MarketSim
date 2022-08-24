@@ -204,7 +204,8 @@ function createPredictorControls(viewID) {
       <input type="checkbox" id="show-points-${viewID}" checked>
     </fieldset><br />
     <fieldset>
-      <legend>Indictors to display></legend>
+      <legend>Indicators to display</legend>
+      <button class="create-btn" onclick="checkAllIndicators(${viewID});">Select all</button><br /><br />
       <label for="macd-${viewID}">MACD</label>
       <input type="checkbox" id="macd-${viewID}"><br />
       <label for="rsi-${viewID}">RSI</label>
@@ -218,6 +219,14 @@ function createPredictorControls(viewID) {
     </fieldset>
   </div>`;
   return controls;
+}
+
+function checkAllIndicators(viewID) {
+  document.getElementById(`macd-${viewID}`).checked = true;
+  document.getElementById(`rsi-${viewID}`).checked = true;
+  document.getElementById(`moving-13-${viewID}`).checked = true;
+  document.getElementById(`moving-26-${viewID}`).checked = true;
+  document.getElementById(`moving-sd-${viewID}`).checked = true;
 }
 
 function readControls(view, viewID) {
