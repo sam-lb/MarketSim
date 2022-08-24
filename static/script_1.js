@@ -384,14 +384,41 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
 
       const lineMode = plotSettings["show-points"] ? "lines+markers" : "lines";
 
-      const traces = [
-        {
+      const traces = [];
+
+      if (plotSettings["show-moving-13"]) {
+        traces.push({
           x: data.datetime,
-          y: data.open,
+          y: data.indicators.moving13,
           mode: lineMode,
-          name: "Open",
-        },
-      ];
+          name: "13 Day Moving Avg",
+        });
+      }
+
+      if (plotSettings["show-moving-26"]) {
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.moving26,
+          mode: lineMode,
+          name: "26 Day Moving Avg",
+        });
+      }
+
+      if (plotSettings["show-moving-sd"]) {
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.movingStdev.upper,
+          fill: "tonexty",
+          mode: lineMode,
+          name: "price + Moving Stdev",
+        });
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.movingStdev.lower,
+          mode: lineMode,
+          name: "price - Moving Stdev",
+        });
+      }
 
       const graphLayout = {
         title: `Indicators for ${ticker} from ${start} to ${end}`,

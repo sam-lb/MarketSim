@@ -12,7 +12,7 @@ app.use(express.static("./static"));
 function formatData(quotes) {
   const openPrice = [], highPrice = [], lowPrice = [], closePrice = [], dateTime = [];
   let quote;
-  for (let i=0; i<quotes.length; i++) {
+  for (let i=quotes.length-1; i>=0; i--) {
     quote = quotes[i];
     openPrice.push(quote.open);
     highPrice.push(quote.high);
@@ -43,11 +43,13 @@ const apiRequestListener = (req, res) => {
     period: params.per,
   }, (err,quotes) => {
     const result = formatData(quotes);
-    /* TODO
+    const indicators = {};
     if (params.ind) {
-      compute indicators
+      indicators.moving13 = ind.movingAverage(result.close, 13);
+      indicators.moving26 = ind.movingAverage(result.close, 26);
+      indicators.movingStdev = ind.movingStdev(result.close);
     }
-    */
+    result.indicators = indicators;
     res.end(JSON.stringify(result));
   });
 }
