@@ -79,13 +79,6 @@ function todaysDate() {
 }
 
 function createView(view) {
-  /*
-  create a new view of type viewType
-  view is a value from the views enum
-  */
-  // console.log(movingAverage(0,0));
-  // console.log("gauss: ", global.gauss);
-
   const div = document.createElement("div");
   div.setAttribute("id", "view-sub-"+viewIDCounter);
   div.setAttribute("class", "view-subcontainer");
@@ -106,7 +99,7 @@ function createView(view) {
           <button class="create-btn" onclick="test(${viewIDCounter});">hide/show</button>-->
           ${controlsHTML}
           <div class="submit-btn-cont">
-            <button class="create-btn" onclick="readDataControls(${viewIDCounter});">Update View</button>
+            <button class="create-btn" onclick="readControls(${view.id}, ${viewIDCounter});">Update View</button>
           </div>
         </div>
         <div class="view" id="view-content-${viewIDCounter}">
@@ -132,12 +125,12 @@ function createControls(view, viewID) {
   // generate html for the controls of a view
   switch(view) {
     case views.DATA:
-      const res = createDataControls(viewID);
-      return res;
+      return createDataControls(viewID);
       break;
     case views.SIMULATION:
       break;
     case views.PREDICTOR:
+      return createPredictorControls(viewID);
       break;
     default:
   }
@@ -180,6 +173,67 @@ function createDataControls(viewID) {
   return controls;
 }
 
+function createPredictorControls(viewID) {
+  const currentDate = todaysDate();
+  const controls = `<div class="controls-subcontainer">
+    <fieldset>
+      <legend>Ticker Information</legend>
+      <label for="ticker-select-${viewID}">Ticker symbol: </label>
+      <select id="ticker-select-${viewID}">
+        ${TOP_TICKERS_HTML}
+      </select><br />
+      <label for="start-date-${viewID}">Start date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-01-01" id="start-date-${viewID}"><br />
+      <label for="end-date-${viewID}">End date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-02-01" id="end-date-${viewID}"><br />
+      <label for="period-select-${viewID}">Period: </label>
+      <select id="period-select-${viewID}">
+        <option value="d">Daily</option>
+        <option value="w">Weekly</option>
+        <option value="m">Monthly</option>
+      </select>
+    </fieldset><br />
+    <fieldset>
+      <legend>Plot settings</legend>
+      <label for="plot-type-select-${viewID}">Plot type: </label>
+      <select id="plot-type-select-${viewID}">
+        <option value="line-plot">Line Plot</option>
+        <option value="candlestick-plot">Candlestick Plot</option>
+      </select><br />
+      <label for="show-points-${viewID}">Show points</label>
+      <input type="checkbox" id="show-points-${viewID}" checked>
+    </fieldset><br />
+    <fieldset>
+      <legend>Indictors to display></legend>
+      <label for="macd-${viewID}">MACD</label>
+      <input type="checkbox" id="macd-${viewID}"><br />
+      <label for="rsi-${viewID}">RSI</label>
+      <input type="checkbox" id="rsi-${viewID}"><br />
+      <label for="moving-13-${viewID}">13 day moving average</label>
+      <input type="checkbox" id="moving-13-${viewID}"><br />
+      <label for="moving-26-${viewID}">26 day moving average</label>
+      <input type="checkbox" id="moving-26-${viewID}"><br />
+      <label for="moving-sd-${viewID}">Moving Standard Deviation</label>
+      <input type="checkbox" id="moving-sd-${viewID}">
+    </fieldset>
+  </div>`;
+  return controls;
+}
+
+function readControls(view, viewID) {
+  switch(view) {
+    case views.DATA.id:
+      return readDataControls(viewID);
+      break;
+    case views.SIMULATION.id:
+      break;
+    case views.PREDICTOR.id:
+      return readPredictorControls(viewID);
+      break;
+    default:
+  }
+}
+
 function readDataControls(viewID) {
   const ticker = document.getElementById(`ticker-select-${viewID}`).value;
   const start = document.getElementById(`start-date-${viewID}`).value;
@@ -201,6 +255,25 @@ function readDataControls(viewID) {
     default:
       createLineGraph(viewID, start, end, ticker, period, plotSettings);
   }
+}
+
+function readPredictorControls(viewID) {
+  const ticker = document.getElementById(`ticker-select-${viewID}`).value;
+  const start = document.getElementById(`start-date-${viewID}`).value;
+  const end = document.getElementById(`end-date-${viewID}`).value;
+  const period = document.getElementById(`period-select-${viewID}`).value;
+
+  const plotSettings = {
+    "plot-type": document.getElementById(`plot-type-select-${viewID}`).value,
+    "show-points": document.getElementById(`show-points-${viewID}`).checked,
+    "show-macd": document.getElementById(`macd-${viewID}`).checked,
+    "show-rsi": document.getElementById(`rsi-${viewID}`).checked,
+    "show-moving-13": document.getElementById(`moving-13-${viewID}`).checked,
+    "show-moving-26": document.getElementById(`moving-26-${viewID}`).checked,
+    "show-moving-sd": document.getElementById(`moving-sd-${viewID}`).checked,
+  };
+
+  createPredictorGraph(viewID, start, end, ticker, period, plotSettings);
 }
 
 function getData(start, end, ticker, period, indicators) {
@@ -277,6 +350,42 @@ function createCandlestick(viewID, start, end, ticker, period, plotSettings) {
 
       const graphLayout = {
         title: `${ticker} from ${start} to ${end}`,
+        xaxis: {
+          title: {
+            text: "Time",
+          },
+          rangeslider: {
+            visible: false
+          }
+        },
+        yaxis: {
+          title: {
+            text: "Fat Stacks"
+          },
+        },
+      };
+
+      Plotly.newPlot("chart-div-" + viewID, traces, graphLayout);
+    });
+}
+
+function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) {
+  getData(start, end, ticker, period, true)
+    .then(data => {
+
+      const lineMode = plotSettings["show-points"] ? "lines+markers" : "lines";
+
+      const traces = [
+        {
+          x: data.datetime,
+          y: data.open,
+          mode: lineMode,
+          name: "Open",
+        },
+      ];
+
+      const graphLayout = {
+        title: `Indicators for ${ticker} from ${start} to ${end}`,
         xaxis: {
           title: {
             text: "Time",

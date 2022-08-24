@@ -113,7 +113,6 @@ select {
 .view-controls {
   text-align: center;
   flex: 1;
-  /* height: 300px; */
   min-height: 300px;
   overflow: auto;
   padding: 10px;
