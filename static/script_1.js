@@ -437,6 +437,15 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
         });
       }
 
+      if (plotSettings["show-rsi"]) {
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.rsi,
+          mode: lineMode,
+          name: "RSI",
+        });
+      }
+
       const graphLayout = {
         title: `Indicators for ${ticker} from ${start} to ${end}`,
         xaxis: {

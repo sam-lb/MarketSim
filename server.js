@@ -49,6 +49,7 @@ const apiRequestListener = (req, res) => {
       indicators.moving26 = ind.movingAverage(result.close, 26);
       indicators.movingStdev = ind.movingStdev(result.close);
       indicators.macd = ind.macd(result.close);
+      indicators.rsi = ind.rsi(result.open, result.close);
     }
     result.indicators = indicators;
     res.end(JSON.stringify(result));

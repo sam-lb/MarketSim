@@ -73,8 +73,55 @@ function macd(df) {
   };
 }
 
-function rsi(df) {
-  
+function percentChange(openPrice, closePrice) {
+  return (openPrice - closePrice) / openPrice * 100;
+}
+
+function rsi(open, close) {
+  const result = [];
+  const span = 14;
+
+  for (let i=0; i<span-1; i++) {
+    result.push(NaN);
+  }
+
+  if (span > open.length) return result;
+
+  const gains = [], losses = [];
+  for (let i=0; i<span; i++) {
+    const change = percentChange(open[i], close[i]);
+    if (change > 0) {
+      gains.push(change);
+      losses.push(0);
+    } else {
+      losses.push(-change);
+      gains.push(0);
+    }
+  }
+  let avgGain = gauss.Vector(gains).mean();
+  let avgLoss = gauss.Vector(losses).mean();
+  result.push(100 - (100 / (1 + avgGain / avgLoss)));
+
+  for (let i=span; i<open.length; i++) {
+    const change = percentChange(open[i], close[i]);
+
+    if (change > 0) {
+      result.push(100 - (100 / (1 + ((span - 1) * avgGain + change / span) / ((span - 1) * avgLoss))));
+      gains.push(change);
+      losses.push(0);
+    } else {
+      result.push(100 - (100 / (1 + ((span - 1) * avgGain) / ((span - 1) * avgLoss - change / span))));
+      losses.push(-change);
+      gains.push(0);
+    }
+
+    losses.shift();
+    gains.shift();
+    avgGain = gauss.Vector(gains).mean();
+    avgLoss = gauss.Vector(losses).mean();
+  }
+
+  return result;
 }
 
 
