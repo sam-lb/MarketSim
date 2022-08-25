@@ -408,15 +408,23 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
         traces.push({
           x: data.datetime,
           y: data.indicators.movingStdev.upper,
-          fill: "tonexty",
+          // fill: "tonexty",
           mode: lineMode,
           name: "price + Moving Stdev",
+          line: {
+            color: "#000000",
+          },
+          type: "scatter",
         });
         traces.push({
           x: data.datetime,
           y: data.indicators.movingStdev.lower,
           mode: lineMode,
           name: "price - Moving Stdev",
+          line: {
+            color: "#000000",
+          },
+          fill: "tonexty",
         });
       }
 
