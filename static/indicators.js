@@ -51,9 +51,33 @@ function movingStdev(df, span) {
   };
 }
 
+function macd(df) {
+  const result1 = [], result2 = [], signalDays = [];
+
+  for (let i=0; i<25; i++) {
+    result1.push(NaN);
+    result2.push(NaN);
+    if (i<8) signalDays.push(NaN)
+  }
+
+  if (result1.length > df.length) return {"macd": result1, "signal": result2,};
+
+  df = gauss.Vector(df);
+  const ema26 = gauss.Vector(result1.concat(df.ema(26).toArray()));
+  const ema12 = gauss.Vector(result2.concat(df.ema(12).toArray().slice(14)));
+  const macdLine = ema12.subtract(ema26).toArray();
+  const signalLine = signalDays.concat(result2.concat(gauss.Vector(macdLine.slice(25)).ema(9).toArray()));
+
+  return {
+    "macd": macdLine,
+    "signal": signalLine,
+  };
+}
+
 
 
 module.exports = {
   "movingAverage": movingAverage,
   "movingStdev": movingStdev,
+  "macd": macd,
 };

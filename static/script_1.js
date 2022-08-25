@@ -1,27 +1,3 @@
-
-// to be replaced with data from api calls
-const trace2 = {
-  x: [2, 3, 4, 5],
-  y: [16, 5, 11, 9],
-  mode: 'lines+markers'
-};
-
-const trace3 = {
-  x: [1, 2, 3, 4],
-  y: [12, 9, 15, 12],
-  mode: 'lines+markers'
-};
-
-const data = [ trace2, trace3 ];
-
-const layout = {
-  title:'graph of data will go here'
-};
-
-// to be replaced with actual data
-tickers = ["ticker 1", "ticker 2", "ticker 3"];
-index_funds = ["index 1", "index 2", "index 3"];
-
 let viewIDCounter = 0;
 const PORT = 3000;
 const apiAddress = `http://localhost:${PORT}/api`;
@@ -39,6 +15,11 @@ const TOP_TICKERS_HTML = (()=>{
   }
   return result;
 })();
+
+const descriptions = {
+  "RSI": "RSI >= 70 may indicate that the security is overbought. RSI <= 30 may indicate that the security is oversold.",
+  "MACD": "When the MACD cross above the signal, it indicates a good time to buy. When it crosses below the signal line, it indicates a good time to sell or short",
+};
 
 function editTitle(viewID) {
   // toggle the editility of the title of the given view
@@ -195,11 +176,6 @@ function createPredictorControls(viewID) {
     </fieldset><br />
     <fieldset>
       <legend>Plot settings</legend>
-      <label for="plot-type-select-${viewID}">Plot type: </label>
-      <select id="plot-type-select-${viewID}">
-        <option value="line-plot">Line Plot</option>
-        <option value="candlestick-plot">Candlestick Plot</option>
-      </select><br />
       <label for="show-points-${viewID}">Show points</label>
       <input type="checkbox" id="show-points-${viewID}" checked>
     </fieldset><br />
@@ -208,6 +184,8 @@ function createPredictorControls(viewID) {
       <button class="create-btn" onclick="checkAllIndicators(${viewID});">Select all</button><br /><br />
       <label for="macd-${viewID}">MACD</label>
       <input type="checkbox" id="macd-${viewID}"><br />
+      <label for="signal-${viewID}">Signal</label>
+      <input type="checkbox" id="signal-${viewID}"><br />
       <label for="rsi-${viewID}">RSI</label>
       <input type="checkbox" id="rsi-${viewID}"><br />
       <label for="moving-13-${viewID}">13 day moving average</label>
@@ -224,6 +202,7 @@ function createPredictorControls(viewID) {
 function checkAllIndicators(viewID) {
   document.getElementById(`macd-${viewID}`).checked = true;
   document.getElementById(`rsi-${viewID}`).checked = true;
+  document.getElementById(`signal-${viewID}`).checked = true;
   document.getElementById(`moving-13-${viewID}`).checked = true;
   document.getElementById(`moving-26-${viewID}`).checked = true;
   document.getElementById(`moving-sd-${viewID}`).checked = true;
@@ -273,9 +252,9 @@ function readPredictorControls(viewID) {
   const period = document.getElementById(`period-select-${viewID}`).value;
 
   const plotSettings = {
-    "plot-type": document.getElementById(`plot-type-select-${viewID}`).value,
     "show-points": document.getElementById(`show-points-${viewID}`).checked,
     "show-macd": document.getElementById(`macd-${viewID}`).checked,
+    "show-signal": document.getElementById(`signal-${viewID}`).checked,
     "show-rsi": document.getElementById(`rsi-${viewID}`).checked,
     "show-moving-13": document.getElementById(`moving-13-${viewID}`).checked,
     "show-moving-26": document.getElementById(`moving-26-${viewID}`).checked,
@@ -408,13 +387,11 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
         traces.push({
           x: data.datetime,
           y: data.indicators.movingStdev.upper,
-          // fill: "tonexty",
           mode: lineMode,
           name: "price + Moving Stdev",
           line: {
-            color: "#000000",
+            color: "#AAAAAA",
           },
-          type: "scatter",
         });
         traces.push({
           x: data.datetime,
@@ -422,9 +399,27 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           mode: lineMode,
           name: "price - Moving Stdev",
           line: {
-            color: "#000000",
+            color: "#AAAAAA",
           },
           fill: "tonexty",
+        });
+      }
+
+      if (plotSettings["show-macd"]) {
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.macd.macd,
+          mode: lineMode,
+          name: "MACD",
+        });
+      }
+
+      if (plotSettings["show-signal"]) {
+        traces.push({
+          x: data.datetime,
+          y: data.indicators.macd.signal,
+          mode: lineMode,
+          name: "Signal",
         });
       }
 

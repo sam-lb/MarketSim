@@ -48,6 +48,7 @@ const apiRequestListener = (req, res) => {
       indicators.moving13 = ind.movingAverage(result.close, 13);
       indicators.moving26 = ind.movingAverage(result.close, 26);
       indicators.movingStdev = ind.movingStdev(result.close);
+      indicators.macd = ind.macd(result.close);
     }
     result.indicators = indicators;
     res.end(JSON.stringify(result));
@@ -55,6 +56,7 @@ const apiRequestListener = (req, res) => {
 }
 
 app.get('/', (req, res) => {
+  console.log("New connection to Cadus Investments Application Server");
   fs.readFile("./index.html", function(err, data) {
     res.writeHead(200, {"Content-Type": "text/html"});
     res.write(data);
