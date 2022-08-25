@@ -56,7 +56,8 @@ const apiRequestListener = (req, res) => {
 }
 
 app.get('/', (req, res) => {
-  console.log("New connection to Cadus Investments Application Server");
+  const CLIENT_IP = req.socket.remoteAddress;
+  console.log("New connection to Cadus Investments Application Server from " + CLIENT_IP);
   fs.readFile("./index.html", function(err, data) {
     res.writeHead(200, {"Content-Type": "text/html"});
     res.write(data);

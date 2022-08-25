@@ -5,9 +5,8 @@
 const gauss = require("gauss");
 
 function movingAverage(df, span) {
-  // TODO
   /*
-  Compute an exponential weighted moving average
+  Compute a simple moving average
   df: array of numbers
   span: number of trading days to use
   */
@@ -74,10 +73,15 @@ function macd(df) {
   };
 }
 
+function rsi(df) {
+  
+}
+
 
 
 module.exports = {
   "movingAverage": movingAverage,
   "movingStdev": movingStdev,
   "macd": macd,
+  "rsi": rsi,
 };

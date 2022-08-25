@@ -19,6 +19,8 @@ const TOP_TICKERS_HTML = (()=>{
 const descriptions = {
   "RSI": "RSI >= 70 may indicate that the security is overbought. RSI <= 30 may indicate that the security is oversold.",
   "MACD": "When the MACD cross above the signal, it indicates a good time to buy. When it crosses below the signal line, it indicates a good time to sell or short",
+  "MOVING_SD": "A measure of volatility. High standard deviation means high volatility, and low standard deviation means low volatility.",
+  "SIGNAL": "The signal is a 9 day exponentially weighted moving average of the MACD.",
 };
 
 function editTitle(viewID) {
@@ -182,17 +184,29 @@ function createPredictorControls(viewID) {
     <fieldset>
       <legend>Indicators to display</legend>
       <button class="create-btn" onclick="checkAllIndicators(${viewID});">Select all</button><br /><br />
-      <label for="macd-${viewID}">MACD</label>
+      <div class="tooltip">
+        <label for="macd-${viewID}">MACD</label>
+        <span class="tooltiptext">${descriptions.MACD}</span>
+      </div>
       <input type="checkbox" id="macd-${viewID}"><br />
-      <label for="signal-${viewID}">Signal</label>
+      <div class="tooltip">
+        <label for="signal-${viewID}">Signal</label>
+        <span class="tooltiptext">${descriptions.SIGNAL}</span>
+      </div>
       <input type="checkbox" id="signal-${viewID}"><br />
-      <label for="rsi-${viewID}">RSI</label>
+      <div class="tooltip">
+        <label for="rsi-${viewID}">RSI</label>
+        <span class="tooltiptext">${descriptions.RSI}</span>
+      </div>
       <input type="checkbox" id="rsi-${viewID}"><br />
       <label for="moving-13-${viewID}">13 day moving average</label>
       <input type="checkbox" id="moving-13-${viewID}"><br />
       <label for="moving-26-${viewID}">26 day moving average</label>
       <input type="checkbox" id="moving-26-${viewID}"><br />
-      <label for="moving-sd-${viewID}">Moving Standard Deviation</label>
+      <div class="tooltip">
+        <label for="moving-sd-${viewID}">Moving Standard Deviation</label>
+        <span class="tooltiptext">${descriptions.MOVING_SD}</span>
+      </div>
       <input type="checkbox" id="moving-sd-${viewID}">
     </fieldset>
   </div>`;
