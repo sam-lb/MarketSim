@@ -425,6 +425,7 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           y: data.indicators.macd.macd,
           mode: lineMode,
           name: "MACD",
+          yaxis: "y2",
         });
       }
 
@@ -434,6 +435,7 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           y: data.indicators.macd.signal,
           mode: lineMode,
           name: "Signal",
+          yaxis: "y2",
         });
       }
 
@@ -461,6 +463,12 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
             text: "Fat Stacks"
           },
         },
+        yaxis2: {
+          title: {
+            text: "Fat Stacks"
+          },
+          overlaying: "y",
+        }
       };
 
       Plotly.newPlot("chart-div-" + viewID, traces, graphLayout);
