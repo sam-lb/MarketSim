@@ -182,3 +182,7 @@ select {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.chart-div {
+  height: 100%;
+}

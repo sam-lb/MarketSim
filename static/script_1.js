@@ -86,7 +86,7 @@ function createView(view) {
           </div>
         </div>
         <div class="view" id="view-content-${viewIDCounter}">
-          <div id="chart-div-${viewIDCounter}"></div>
+          <div class="chart-div" id="chart-div-${viewIDCounter}"></div>
         </div>
       </div>`;
     div.innerHTML = newContent;
@@ -445,15 +445,21 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           y: data.indicators.rsi,
           mode: lineMode,
           name: "RSI",
+          yaxis: "y2",
         });
       }
 
       const graphLayout = {
         title: `Indicators for ${ticker} from ${start} to ${end}`,
+        grid: {
+          rows: 2,
+          columns: 1,
+          pattern: "independent",
+        },
         xaxis: {
-          title: {
-            text: "Time",
-          },
+          // title: {
+          //   text: "Time",
+          // },
           rangeslider: {
             visible: false
           }
@@ -462,12 +468,13 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           title: {
             text: "Fat Stacks"
           },
+          domain: [0.55, 1],
         },
         yaxis2: {
           title: {
             text: "Fat Stacks"
           },
-          overlaying: "y",
+          domain: [0, 0.45],
         }
       };
 
