@@ -378,6 +378,9 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
       const lineMode = plotSettings["show-points"] ? "lines+markers" : "lines";
 
       const traces = [];
+      const secondAxis = (plotSettings["show-moving-13"] || plotSettings["show-moving-26"]
+                        || plotSettings["show-moving-sd"]) && (plotSettings["show-macd"] ||
+                      plotSettings["show-signal"] || plotSettings["show-rsi"]);
 
       if (plotSettings["show-moving-13"]) {
         traces.push({
@@ -449,6 +452,10 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
         });
       }
 
+      const domain1 = secondAxis ? [0.52, 0] : [0, 1];
+      const domain2 = secondAxis ? [0, 0.48] : [0, 1];
+
+
       const graphLayout = {
         title: `Indicators for ${ticker} from ${start} to ${end}`,
         grid: {
@@ -468,13 +475,13 @@ function createPredictorGraph(viewID, start, end, ticker, period, plotSettings) 
           title: {
             text: "Fat Stacks"
           },
-          domain: [0.55, 1],
+          domain: domain1,
         },
         yaxis2: {
           title: {
             text: "Fat Stacks"
           },
-          domain: [0, 0.45],
+          domain: domain2,
         }
       };
 
