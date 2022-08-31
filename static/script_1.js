@@ -67,6 +67,9 @@ function createView(view) {
   div.setAttribute("class", "view-subcontainer");
   const title = view.title + " " + viewIDCounter;
   const controlsHTML = createControls(view, viewIDCounter);
+  const chartHTML = (view === views.SIMULATION) ? "" : `<div class="view" id="view-content-${viewIDCounter}">
+    <div class="chart-div" id="chart-div-${viewIDCounter}"></div>
+  </div>`;
 
   const newContent = `
       <div class="view-header">
@@ -85,9 +88,7 @@ function createView(view) {
             <button class="create-btn" onclick="readControls(${view.id}, ${viewIDCounter});">Update View</button>
           </div>
         </div>
-        <div class="view" id="view-content-${viewIDCounter}">
-          <div class="chart-div" id="chart-div-${viewIDCounter}"></div>
-        </div>
+        ${chartHTML}
       </div>`;
     div.innerHTML = newContent;
 
@@ -111,6 +112,7 @@ function createControls(view, viewID) {
       return createDataControls(viewID);
       break;
     case views.SIMULATION:
+      return createSimulationControls(viewID);
       break;
     case views.PREDICTOR:
       return createPredictorControls(viewID);
@@ -154,6 +156,29 @@ function createDataControls(viewID) {
     </fieldset>
   </div>`;
   return controls;
+}
+
+function createSimulationControls(viewID) {
+  const currentDate = todaysDate();
+  const controls = `<div class="controls-subcontainer">
+    <fieldset>
+      <legend>Ticker Information</legend>
+      <label for="ticker-select-${viewID}">Ticker symbol: </label>
+      <select id="ticker-select-${viewID}">
+        ${TOP_TICKERS_HTML}
+      </select><br />
+      <label for="start-date-${viewID}">Start date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-01-01" id="start-date-${viewID}"><br />
+      <label for="end-date-${viewID}">End date: </label>
+      <input type="date" min="2012-01-01" max="${currentDate}" value="2021-02-01" id="end-date-${viewID}"><br />
+      <label for="period-select-${viewID}">Period: </label>
+      <select id="period-select-${viewID}">
+        <option value="d">Daily</option>
+        <option value="w">Weekly</option>
+        <option value="m">Monthly</option>
+      </select>
+    </fieldset><br />`;
+    return controls;
 }
 
 function createPredictorControls(viewID) {
