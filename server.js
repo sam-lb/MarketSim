@@ -3,10 +3,24 @@ const fs = require("fs");
 const url = require("url");
 const yf = require("yahoo-finance");
 const ind = require("./static/indicators.js");
+const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
 app.use(express.static("./static"));
+
+/*
+this line needs to be changed so it's of the form
+http://[IPv4 Network Addr of Server]:PORT
+so when you switch wifi you have to update it
+this should be updated to automatically get the IP, which can supposedly
+be done with
+const ip = require("ip");
+const addr = ip.address();
+*/
+app.use(cors({
+  origin: `http://10.215.54.182:${PORT}`,
+}));
 
 
 function formatData(quotes) {
