@@ -1,16 +1,21 @@
 :root {
   --main-accent-col: #dddddd;
   --main-bg-col: #aaaaaa;
-  --sec-accent-col: #8888ff;
-  --ter-accent-col: #bbbbff;
-  --ter-accent-col2: #4444ff;
+  /* --sec-accent-col: #8888ff; */
+  /* --ter-accent-col: #bbbbff; */
+  --sec-accent-col: #81bca7;
+  --ter-accent-col: #b3deca;
+  /* --ter-accent-col2: #4444ff; */
+  --ter-accent-col2: #60bc75;
   --ter-accent-col3: #eeeeee;
-  --main-text-col: #000000;
+  /* --main-text-col: #000000; */
+  --main-text-col: #04213e;
 }
 
 html, body {
   margin: 0;
   background-color: var(--main-bg-col);
+  color: var(--main-text-col);
   font-family: arial;
   font-weight: lighter;
   height: 100%;
