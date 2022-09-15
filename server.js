@@ -8,11 +8,13 @@ const ip = require("ip");
 
 const app = express();
 const PORT = 3000;
-const IP_ADDR = ip.address();
+//const IP_ADDR = ip.address();
+const IP_ADDR = "localhost";
 app.use(express.static("./static"));
+str = `http://${IP_ADDR}:${PORT}`;
 
 app.use(cors({
-  origin: `http://${IP_ADDR}:${PORT}`,
+  origin: str,
 }));
 
 function formatData(quotes) {
@@ -77,3 +79,4 @@ app.get("/api", apiRequestListener);
 app.listen(PORT, () => {
   console.log(`Cadus Investments Application Server (${IP_ADDR}) listening on port ${PORT}`);
 });
+console.log(app);

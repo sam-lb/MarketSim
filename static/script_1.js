@@ -1,6 +1,6 @@
 let viewIDCounter = 0;
 const PORT = 3000;
-const apiAddress = `http://localhost:${PORT}/api`;
+const apiAddress = `http://192.168.1.206:${PORT}/api`;
 
 const views = {
   DATA: {id: 0, title: "Untitled Data View"},
@@ -312,7 +312,6 @@ function getData(start, end, ticker, period, indicators) {
   indicators = indicators ? 1 : 0;
 
   // TODO add validity checks for parameters
-
   const queryString = `?Y=${Y}&M=${M}&D=${D}&endY=${endY}&endM=${endM}&endD=${endD}&sym=${ticker}&per=${period}&ind=${indicators}`;
   return fetch(apiAddress + queryString).then(response => response.json());
 }
